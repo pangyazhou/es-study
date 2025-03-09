@@ -64,13 +64,13 @@ def insert_docs(index, filename):
 
 
 def insert_batch(index, filename):
-    df = pd.read_csv(filename, sep='\t', encoding='utf-8', names=['text', 'label'])
+    df = pd.read_csv(filename, sep=',', encoding='utf-8', names=['text', 'label'])
     text_list = df['text'].tolist()
     bulk_data = []
     # 构建批量文档列表
-    for text in text_list:
+    for idx in range(len(text_list)):
         index_data = {"index": {"_index": index}, "_type": "_doc"}
-        doc = {"remark": text, "description": text}
+        doc = {"remark": text_list[idx], "description": text_list[-idx]}
         bulk_data.append(json.dumps(index_data))
         bulk_data.append(json.dumps(doc))
     bulk_data = "\n".join(bulk_data) + "\n"
@@ -81,7 +81,7 @@ def insert_batch(index, filename):
 
 if __name__ == '__main__':
     index_name = 'demo-index'
-    file_name = "../data/train.txt"
+    file_name = "../data/zh.test.csv"
     delete_index(index_name)
     create_index(index_name, INDEX_SETTING_DATA)
     insert_batch(index_name, file_name)
