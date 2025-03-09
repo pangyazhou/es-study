@@ -6,6 +6,7 @@
 @Function: 创建索引
 """
 import httpx
+import requests
 import json
 import pandas as pd
 
@@ -56,10 +57,26 @@ def insert_docs(index, filename):
     df = pd.read_csv(filename, sep='\t', encoding='utf-8', names=['text', 'label'])
     text_list = df['text'].tolist()
     doc = {}
-    for text in text_list:
+    for text in text_list[:300]:
         doc['remark'] = text
         doc['description'] = text
         insert_doc(index, doc)
+
+
+def insert_batch(index, filename):
+    df = pd.read_csv(filename, sep='\t', encoding='utf-8', names=['text', 'label'])
+    text_list = df['text'].tolist()
+    bulk_data = []
+    # 构建批量文档列表
+    for text in text_list:
+        index_data = {"index": {"_index": index}, "_type": "_doc"}
+        doc = {"remark": text, "description": text}
+        bulk_data.append(json.dumps(index_data))
+        bulk_data.append(json.dumps(doc))
+    bulk_data = "\n".join(bulk_data) + "\n"
+    # 调用批量插入接口
+    headers = {'Content-Type': 'application/json'}
+    requests.post(f'{ES_URL}/_bulk', headers=headers, data=bulk_data)
 
 
 if __name__ == '__main__':
@@ -67,5 +84,4 @@ if __name__ == '__main__':
     file_name = "../data/train.txt"
     delete_index(index_name)
     create_index(index_name, INDEX_SETTING_DATA)
-    insert_docs(index_name, file_name)
-
+    insert_batch(index_name, file_name)

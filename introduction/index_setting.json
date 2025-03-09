@@ -11,7 +11,7 @@
          "custom_pinyin": {
            "type": "pinyin",
            "keep_original": true,
-           "keep_full_pinyin": true,
+           "keep_full_pinyin": false,
            "keep_joined_full_pinyin": true,
            "keep_first_letter": false,
            "lowercase": true,
