@@ -1,0 +1,63 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "custom_analyzer": {
+          "tokenizer": "ik_max_word",
+          "filter": ["custom_pinyin"]
+        }
+      },
+      "filter": {
+         "custom_pinyin": {
+           "type": "pinyin",
+           "keep_original": true,
+           "keep_full_pinyin": true,
+           "keep_joined_full_pinyin": true,
+           "keep_first_letter": false,
+           "lowercase": true,
+           "limit_first_letter_length": 16,
+           "remove_duplicated_term": true,
+           "keep_none_chinese": false
+         },
+        "pinyin_length_filter": {
+          "type": "length",
+          "min": 2
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "ids": {
+        "type": "long"
+      },
+      "age": {
+        "type": "integer"
+      },
+      "sex": {
+        "type": "byte"
+      },
+      "grade": {
+        "type": "short"
+      },
+      "salary": {
+        "type": "float"
+      },
+      "location": {
+        "type": "double"
+      },
+      "name": {
+        "type": "keyword"
+      },
+      "remark": {
+        "type": "text",
+        "analyzer": "custom_analyzer"
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "custom_analyzer",
+        "search_analyzer": "ik_smart"
+      }
+    }
+  }
+}
